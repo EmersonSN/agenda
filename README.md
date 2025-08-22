@@ -57,7 +57,7 @@ OOP principles.
 -   Add JUnit tests
 -   Add logging instead of `System.out.println`
 -   Start to use SpringBoot for API CRUD
-
+-   Start to use BD
 ------------------------------------------------------------------------
 
 💻 Developed by Emerson Santos
