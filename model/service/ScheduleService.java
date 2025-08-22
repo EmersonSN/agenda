@@ -1,5 +1,6 @@
 package model.service;
 
+import model.entities.Client;
 import model.entities.Schedule;
 
 import java.io.*;
@@ -19,12 +20,12 @@ public class ScheduleService {
         String email = sc.nextLine();
         System.out.print("Data agendamento (dd/MM/yyyy HH:mm): ");
         String date = sc.nextLine();
-        LocalDateTime schedule = LocalDateTime.parse(date, formatter);
+        LocalDateTime scheduleDate = LocalDateTime.parse(date, formatter);
         System.out.print("Telefone para contato: ");
         long phone = Long.parseLong(sc.nextLine());
         try {
             int id = schedules.size();
-            schedules.add(new Schedule(id, name, email, schedule, phone));
+            schedules.add(new Schedule(id, scheduleDate, new Client(id, name, email, phone)));
         } catch (IllegalArgumentException e) {
             System.out.println("Registering error: " + e.getMessage());
         }
@@ -53,23 +54,23 @@ public class ScheduleService {
                 case 1:
                     System.out.print("Agora digite o novo nome: ");
                     String name = sc.nextLine();
-                    schedules.get(cod).setName(name);
+                    schedules.get(cod).getClient().setName(name);
                     break;
                 case 2:
                     System.out.print("Agora digite o novo email: ");
                     String email = sc.nextLine();
-                    schedules.get(cod).setEmail(email);
+                    schedules.get(cod).getClient().setEmail(email);
                     break;
                 case 3:
                     System.out.print("Agora digite a nova data (dd/MM/yyyy HH:mm): ");
                     String date = sc.nextLine();
-                    LocalDateTime schedule = LocalDateTime.parse(date, formatter);
-                    schedules.get(cod).setData(schedule);
+                    LocalDateTime scheduleDate = LocalDateTime.parse(date, formatter);
+                    schedules.get(cod).setScheduleDate(scheduleDate);
                     break;
                 case 4:
                     System.out.print("Agora digite o novo telefone: ");
                     long phone = Long.parseLong(sc.nextLine());
-                    schedules.get(cod).setPhone(phone);
+                    schedules.get(cod).getClient().setPhone(phone);
                     break;
                 default:
                     System.out.println("Invalid code");
@@ -102,7 +103,7 @@ public class ScheduleService {
         sc.nextLine();
         String find = sc.nextLine();
         for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).getName().toLowerCase().contains(find.toLowerCase())) {
+            if (schedules.get(i).getClient().getName().toLowerCase().contains(find.toLowerCase())) {
                 System.out.printf("%d - %s%n", i, schedules.get(i));
                 found = true;
                 break;
@@ -119,7 +120,7 @@ public class ScheduleService {
         sc.nextLine();
         String find = sc.nextLine();
         for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).getEmail().toLowerCase().contains(find.toLowerCase())) {
+            if (schedules.get(i).getClient().getEmail().toLowerCase().contains(find.toLowerCase())) {
                 System.out.printf("%d - %s%n", i, schedules.get(i));
                 found = true;
                 break;
@@ -136,11 +137,11 @@ public class ScheduleService {
             for (Schedule schedule : schedules) {
                 if (validationData(schedule)) {
                     bw.write(String.format("%d,%s,%s,%s,%d%n",
-                            schedule.getId(),
-                            schedule.getName(),
-                            schedule.getEmail(),
-                            schedule.getData().format(formatter),
-                            schedule.getPhone()
+                            schedule.getScheduleId(),
+                            schedule.getClient().getName(),
+                            schedule.getClient().getEmail(),
+                            schedule.getScheduleDate().format(formatter),
+                            schedule.getClient().getPhone()
                     ));
                     savedCount++;
                 }
@@ -160,9 +161,9 @@ public class ScheduleService {
                 int id = Integer.parseInt(div[0]);
                 String name = div[1];
                 String email = div[2];
-                LocalDateTime schedule = LocalDateTime.parse(div[3], formatter);
+                LocalDateTime scheduleDate = LocalDateTime.parse(div[3], formatter);
                 long phone = Long.parseLong(div[4]);
-                schedules.add(new Schedule(id, name, email, schedule, phone));
+                schedules.add(new Schedule(id, scheduleDate, new Client(id, name, email, phone)));
                 isNotEmpty++;
             }
             if (isNotEmpty > 0) {
@@ -179,7 +180,7 @@ public class ScheduleService {
             while ((line = br.readLine()) != null) {
                 String[] div = line.split(",");
                 int id = Integer.parseInt(div[0]);
-                if (schedule.getId() == id) {
+                if (schedule.getScheduleId() == id) {
                     return false;
                 }
             }

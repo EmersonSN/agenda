@@ -3,71 +3,51 @@ package model.entities;
 import java.time.LocalDateTime;
 
 public class Schedule {
-    private final Integer id;
-    private String name;
-    private String email;
-    private LocalDateTime data;
-    private long phone;
+    private Integer scheduleId;
+    private Client client;
+    private LocalDateTime scheduleDate;
 
-    public Schedule(Integer id, String name, String email, LocalDateTime data, long phone) {
-        if (name.trim().isEmpty()) {
+    public Schedule(Integer scheduleId, LocalDateTime scheduleDate, Client client) {
+        if (client.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        if (email == null || !email.contains("@")) {
+        if (client.getEmail() == null || !client.getEmail().contains("@")) {
             throw new IllegalArgumentException("Invalid email");
         }
-        if (phone <= 0) {
+        if (client.getPhone() <= 0) {
             throw new IllegalArgumentException("Invalid phone");
         }
-        if (data.isBefore(LocalDateTime.now())) {
+        if (scheduleDate.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("The date must be after today");
         }
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.data = data;
-        this.phone = phone;
+        this.scheduleId = scheduleId;
+        this.client = client;
+        this.scheduleDate = scheduleDate;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getScheduleId() {
+        return scheduleId;
     }
 
-    public String getName() {
-        return name;
+    public Client getClient() {
+        return client;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public String getEmail() {
-        return email;
+    public LocalDateTime getScheduleDate() {
+        return scheduleDate;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDateTime getData() {
-        return data;
-    }
-
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
-
-    public long getPhone() {
-        return phone;
-    }
-
-    public void setPhone(long phone) {
-        this.phone = phone;
+    public void setScheduleDate(LocalDateTime scheduleDate) {
+        this.scheduleDate = scheduleDate;
     }
 
     @Override
     public String toString() {
-        return String.format("%d, %s, %s, %s, %d", id, name, email, data, phone);
+        return String.format("%d, %s, %s, %s, %d", scheduleId, client.getName(), client.getEmail(), scheduleDate, client.getPhone());
     }
 }
 
