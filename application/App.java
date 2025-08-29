@@ -1,8 +1,8 @@
 package application;
 
-import model.entities.Schedule;
+import model.entities.Client;
 import model.exceptions.DataException;
-import model.service.ScheduleService;
+import model.services.ScheduleService;
 
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -13,13 +13,14 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        List<Schedule> schedules = new ArrayList<>();
+        List<Client> clients = new ArrayList<>();
         ScheduleService service = new ScheduleService();
         int option = 0;
 
+        service.loadData(clients);
+
         while (option != 9) {
             try {
-                service.loadData(schedules);
                 System.out.printf("================ APP STARTED ================%n" +
                         "Escolha uma opção:%n1 - Cadastrar usuário%n" +
                         "2 - Listar usuários%n" +
@@ -34,28 +35,28 @@ public class App {
 
                 switch (option) {
                     case 1:
-                        service.userInsert(sc, schedules);
+                        service.userInsert(sc, clients);
                         break;
                     case 2:
-                        service.userList(schedules);
+                        service.userList(clients);
                         break;
                     case 3:
-                        service.userAlter(sc, schedules);
+                        service.userAlter(sc, clients);
                         break;
                     case 4:
-                        service.userDelete(sc, schedules);
+                        service.userDelete(sc, clients);
                         break;
                     case 5:
-                        service.findByName(sc, schedules);
+                        service.findByName(sc, clients);
                         break;
                     case 6:
-                        service.findByEmail(sc, schedules);
+                        service.findByEmail(sc, clients);
                         break;
                     case 7:
-                        service.loadData(schedules);
+                        service.loadData(clients);
                         break;
                     case 8:
-                        service.saveData(schedules);
+                        service.saveData(clients);
                         break;
                     case 9:
                         System.out.println("Good bye, application ending");
@@ -70,6 +71,8 @@ public class App {
                 System.out.println(e.getMessage());
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid date format");
+            } catch (NumberFormatException e){
+                System.out.println("Number format: "+ e.getMessage());
             }
         }
         System.out.print("================ APP FINISHED ================");

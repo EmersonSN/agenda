@@ -1,4 +1,4 @@
-package model.service;
+package model.services;
 
 import model.entities.Client;
 import model.entities.Schedule;
@@ -12,65 +12,64 @@ import java.util.Scanner;
 public class ScheduleService {
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    public void userInsert(Scanner sc, List<Schedule> schedules) {
+    public void userInsert(Scanner sc, List<Client> clients) {
         System.out.println("Cadastre o usuário: ");
         System.out.print("Nome: ");
         String name = sc.nextLine();
         System.out.print("Email: ");
         String email = sc.nextLine();
         System.out.print("Data agendamento (dd/MM/yyyy HH:mm): ");
-        String date = sc.nextLine();
-        LocalDateTime scheduleDate = LocalDateTime.parse(date, formatter);
+        LocalDateTime scheduleDate = LocalDateTime.parse(sc.nextLine(), formatter);
         System.out.print("Telefone para contato: ");
         long phone = Long.parseLong(sc.nextLine());
         try {
-            int id = schedules.size();
-            schedules.add(new Schedule(id, scheduleDate, new Client(id, name, email, phone)));
+            int id = clients.size();
+            Client client = new Client(id, name, email, phone);
+            client.getSchedules().add(new Schedule(id, scheduleDate));
+            clients.add(client);
         } catch (IllegalArgumentException e) {
             System.out.println("Registering error: " + e.getMessage());
         }
 
     }
 
-    public void userList(List<Schedule> schedules) {
+    public void userList(List<Client> clients) {
         System.out.println("ID | NOME | EMAIL | DATE | PHONE");
-        for (Schedule schedule : schedules) {
-            System.out.printf("%s%n", schedule);
+        for (Client client : clients) {
+            System.out.printf("%s%n", client);
         }
-
     }
 
-    public void userAlter(Scanner sc, List<Schedule> schedules) {
+    public void userAlter(Scanner sc, List<Client> clients) {
         System.out.println("Escolha um cod para alterar");
-        userList(schedules);
+        userList(clients);
         System.out.print("Digite o código: ");
         int cod = Integer.parseInt(sc.nextLine());
         System.out.println();
-        if (cod >= 0 && cod < schedules.size()) {
+        if (cod >= 0 && cod < clients.size()) {
             System.out.println("O que você deseja alterar?");
             System.out.println("1 - Nome\n2 - Email\n3 - Date\n4 - Phone");
-            int option = sc.nextInt();
+            int option = Integer.parseInt(sc.nextLine());
             switch (option) {
                 case 1:
                     System.out.print("Agora digite o novo nome: ");
                     String name = sc.nextLine();
-                    schedules.get(cod).getClient().setName(name);
+                    clients.get(cod).setName(name);
                     break;
                 case 2:
                     System.out.print("Agora digite o novo email: ");
-                    String email = sc.nextLine();
-                    schedules.get(cod).getClient().setEmail(email);
+                    String email = sc.next();
+                    clients.get(cod).setEmail(email);
                     break;
                 case 3:
                     System.out.print("Agora digite a nova data (dd/MM/yyyy HH:mm): ");
-                    String date = sc.nextLine();
-                    LocalDateTime scheduleDate = LocalDateTime.parse(date, formatter);
-                    schedules.get(cod).setScheduleDate(scheduleDate);
+                    LocalDateTime scheduleDate = LocalDateTime.parse(sc.nextLine(), formatter);
+                    clients.get(cod).getSchedules().get(cod).setScheduleDate(scheduleDate);
                     break;
                 case 4:
                     System.out.print("Agora digite o novo telefone: ");
                     long phone = Long.parseLong(sc.nextLine());
-                    schedules.get(cod).getClient().setPhone(phone);
+                    clients.get(cod).setPhone(phone);
                     break;
                 default:
                     System.out.println("Invalid code");
@@ -81,67 +80,68 @@ public class ScheduleService {
             System.out.println("Invalid cod");
         }
         System.out.println("Data updated successfully");
-        userList(schedules);
+        userList(clients);
     }
 
-    public void userDelete(Scanner sc, List<Schedule> schedules) {
+    public void userDelete(Scanner sc, List<Client> clients) {
         System.out.println("Escolha um cod para excluir");
-        userList(schedules);
+        userList(clients);
         System.out.print("Digite o código: ");
-        int cod = sc.nextInt();
-        if (cod >= 0 && cod < schedules.size()) {
-            schedules.remove(cod);
+        int cod = Integer.parseInt(sc.nextLine());
+        if (cod >= 0 && cod < clients.size()) {
+            clients.remove(cod);
+            System.out.println("Excluido");
         } else {
             System.out.println("Invalid cod");
         }
-        userList(schedules);
+        userList(clients);
     }
 
-    public void findByName(Scanner sc, List<Schedule> schedules) {
+    public void findByName(Scanner sc, List<Client> clients) {
         boolean found = false;
         System.out.print("Digite o nome de quem deseja encontrar: ");
         sc.nextLine();
         String find = sc.nextLine();
-        for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).getClient().getName().toLowerCase().contains(find.toLowerCase())) {
-                System.out.printf("%d - %s%n", i, schedules.get(i));
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getName().toLowerCase().contains(find.toLowerCase())) {
+                System.out.printf("%d - %s%n", i, clients.get(i));
                 found = true;
                 break;
             }
-            if (!found) {
-                System.out.println("Usuário não encontrado");
-            }
+        }
+        if (!found) {
+            System.out.println("Usuário não encontrado");
         }
     }
 
-    public void findByEmail(Scanner sc, List<Schedule> schedules) {
+    public void findByEmail(Scanner sc, List<Client> clients) {
         boolean found = false;
         System.out.print("Digite o email de quem deseja encontrar: ");
         sc.nextLine();
         String find = sc.nextLine();
-        for (int i = 0; i < schedules.size(); i++) {
-            if (schedules.get(i).getClient().getEmail().toLowerCase().contains(find.toLowerCase())) {
-                System.out.printf("%d - %s%n", i, schedules.get(i));
+        for (int i = 0; i < clients.size(); i++) {
+            if (clients.get(i).getEmail().toLowerCase().contains(find.toLowerCase())) {
+                System.out.printf("%d - %s%n", i, clients.get(i));
                 found = true;
                 break;
             }
-            if (!found) {
-                System.out.println("Usuário não encontrado");
-            }
+        }
+        if (!found) {
+            System.out.println("Usuário não encontrado");
         }
     }
 
-    public void saveData(List<Schedule> schedules) {
+    public void saveData(List<Client> clients) {
         int savedCount = 0;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("c:\\temp\\schedule.txt", true))) {
-            for (Schedule schedule : schedules) {
-                if (validationData(schedule)) {
+            for (Client client : clients) {
+                if (validationData(client)) {
                     bw.write(String.format("%d,%s,%s,%s,%d%n",
-                            schedule.getScheduleId(),
-                            schedule.getClient().getName(),
-                            schedule.getClient().getEmail(),
-                            schedule.getScheduleDate().format(formatter),
-                            schedule.getClient().getPhone()
+                            client.getClientId(),
+                            client.getName(),
+                            client.getEmail(),
+                            client.getSchedules().get(client.getClientId()).getScheduleDate().format(formatter),
+                            client.getPhone()
                     ));
                     savedCount++;
                 }
@@ -152,7 +152,7 @@ public class ScheduleService {
         }
     }
 
-    public void loadData(List<Schedule> schedules) {
+    public void loadData(List<Client> clients) {
         try (BufferedReader br = new BufferedReader(new FileReader("c:\\temp\\schedule.txt"))) {
             String line;
             int isNotEmpty = 0;
@@ -163,24 +163,26 @@ public class ScheduleService {
                 String email = div[2];
                 LocalDateTime scheduleDate = LocalDateTime.parse(div[3], formatter);
                 long phone = Long.parseLong(div[4]);
-                schedules.add(new Schedule(id, scheduleDate, new Client(id, name, email, phone)));
+                Client client = new Client(id, name, email, phone);
+                client.getSchedules().add(new Schedule(id, scheduleDate));
+                clients.add(client);
                 isNotEmpty++;
             }
             if (isNotEmpty > 0) {
-                userList(schedules);
+                userList(clients);
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public boolean validationData(Schedule schedule) {
+    public boolean validationData(Client client) {
         try (BufferedReader br = new BufferedReader(new FileReader("c:\\temp\\schedule.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] div = line.split(",");
                 int id = Integer.parseInt(div[0]);
-                if (schedule.getScheduleId() == id) {
+                if (client.getClientId() == id) {
                     return false;
                 }
             }
