@@ -64,7 +64,7 @@ public class ScheduleService {
                 case 3:
                     System.out.print("Agora digite a nova data (dd/MM/yyyy HH:mm): ");
                     LocalDateTime scheduleDate = LocalDateTime.parse(sc.nextLine(), formatter);
-                    clients.get(cod).getSchedules().get(cod).setScheduleDate(scheduleDate);
+                    clients.get(cod).getSchedules().get(0).setScheduleDate(scheduleDate);
                     break;
                 case 4:
                     System.out.print("Agora digite o novo telefone: ");
@@ -100,7 +100,6 @@ public class ScheduleService {
     public void findByName(Scanner sc, List<Client> clients) {
         boolean found = false;
         System.out.print("Digite o nome de quem deseja encontrar: ");
-        sc.nextLine();
         String find = sc.nextLine();
         for (int i = 0; i < clients.size(); i++) {
             if (clients.get(i).getName().toLowerCase().contains(find.toLowerCase())) {
@@ -117,7 +116,6 @@ public class ScheduleService {
     public void findByEmail(Scanner sc, List<Client> clients) {
         boolean found = false;
         System.out.print("Digite o email de quem deseja encontrar: ");
-        sc.nextLine();
         String find = sc.nextLine();
         for (int i = 0; i < clients.size(); i++) {
             if (clients.get(i).getEmail().toLowerCase().contains(find.toLowerCase())) {
@@ -140,7 +138,7 @@ public class ScheduleService {
                             client.getClientId(),
                             client.getName(),
                             client.getEmail(),
-                            client.getSchedules().get(client.getClientId()).getScheduleDate().format(formatter),
+                            client.getSchedules().get(0).getScheduleDate().format(formatter),
                             client.getPhone()
                     ));
                     savedCount++;
