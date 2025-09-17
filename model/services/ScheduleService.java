@@ -25,8 +25,10 @@ public class ScheduleService {
         try {
             int id = clients.size();
             Client client = new Client(id, name, email, phone);
+            clientExists(clients, client);
             client.getSchedules().add(new Schedule(id, scheduleDate));
             clients.add(client);
+            System.out.println("Chegou aqui");
         } catch (IllegalArgumentException e) {
             System.out.println("Registering error: " + e.getMessage());
         }
@@ -188,6 +190,20 @@ public class ScheduleService {
             System.out.println("Error on validationData: " + e.getMessage());
         }
         return true;
+    }
+
+    public void clientExists(List<Client> clients, Client client) {
+        int hashCode = client.hashCode();
+        int cod = 0;
+        for (Client c : clients) {
+            if (hashCode == c.hashCode()) {
+                cod = clients.size();
+                break;
+            }
+        }
+        if (cod != 0) {
+            throw new IllegalArgumentException("Client already exists");
+        }
     }
 }
 
