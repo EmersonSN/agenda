@@ -28,7 +28,6 @@ public class ScheduleService {
             clientExists(clients, client);
             client.getSchedules().add(new Schedule(id, scheduleDate));
             clients.add(client);
-            System.out.println("Chegou aqui");
         } catch (IllegalArgumentException e) {
             System.out.println("Registering error: " + e.getMessage());
         }
